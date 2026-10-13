@@ -604,6 +604,10 @@ roslaunch musculoskeletal_dqn_hand_control main.launch
 
 随机基线（来源：运行日志 `diag_out.txt`）：手部任务 300 步随机回合 ≈ **−1344**；初始姿态距离目标 **1.841** 弧度。
 
+**训练曲线（2000 步冒烟测试）：**
+
+![Double DQN 训练曲线](figs/train_curve.png)
+
 ### 7.3 调优记录
 
 
