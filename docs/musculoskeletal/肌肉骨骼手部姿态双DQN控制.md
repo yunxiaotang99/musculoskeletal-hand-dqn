@@ -482,29 +482,33 @@ def generate_launch_description():
 | Python | 3.8+（建议 3.10）                                           |
 | 依赖     | numpy、torch、mujoco、myosuite、gymnasium、pillow、matplotlib |
 
-### 6.2 步骤 0：环境准备
+### 6.2 配置环境
 
+**第一步：安装 Python 3.8+**（建议 3.10），勾选 Add to PATH。
 
+**第二步：安装依赖包**
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
+依赖清单：
+
+| 包名 | 版本 | 作用 |
+| --- | --- | --- |
+| mujoco | 3.15.0 | 物理仿真引擎 |
+| myosuite | 3.0.0 | 肌肉骨骼环境 |
+| torch | 2.x+cpu | 深度神经网络 |
+| gymnasium | 0.29+ | 环境接口 |
+| numpy | 1.21+ | 数值计算 |
+| matplotlib | 3.5+ | 绘制训练曲线 |
+| pillow | 9.0+ | 图片渲染保存 |
+
 > **Windows 注意事项**
 >
-> ：MuJoCo 在 Windows 上无法加载含中文路径下的模型文件（会报 
+> MuJoCo 在 Windows 上无法加载含中文路径下的模型文件（会报 `ValueError: Error opening file '...trapezium.stl'`）。
 >
-> `ValueError: Error opening file '...trapezium.stl'`
->
-> ，即使文件实际存在）。虚拟环境建议安装在纯英文路径下（如 
->
-> `C:\Users\Public\msk_ddqn_env\.venv`
->
-> ），代码工程目录可保留中文，运行时使用该英文路径下的 
->
-> `python.exe`
->
->  执行。
+> 建议把虚拟环境安装在纯英文路径下，例如 `C:\Users\Public\msk_ddqn_env\.venv`，运行时使用该英文路径下的 `python.exe` 执行。
 
 ### 6.3 步骤 1：环境验证
 
@@ -572,19 +576,6 @@ roslaunch musculoskeletal_dqn_hand_control main.launch
 
 超参数（`main.py` 顶部常量）：每肌肉 5 档动作 `N_BIN=5`、折扣因子 `GAMMA=0.99`、批大小 `BATCH=64`、回放容量 `BUFFER=100000`、目标网络同步周期 `TARGET_SYNC=1000`。权重保存在 `models/` 目录，按环境名分文件。
 
-### 6.8 常见问题
-
-**Q1：**`gym.make('myoHandPoseFixed-v0')`**&#x20;报&#x20;**`ValueError: Error opening file '...stl'`**？**
-
-MuJoCo 在 Windows 上打不开含中文路径下的模型文件。把虚拟环境（或整个工程）放在纯英文路径下即可。
-
-**Q2：训练很久回合奖励仍在 −380 附近？**
-
-该量级等于随机策略（随机 100 步回合实测 −383.28，来源：`diag_out.txt`）。说明模型表现接近随机：手部任务有 39 肌肉、108 维观测，对离散 DQN 难度高，需要按 50 万步完整训练；也可先用更简单的肘部任务 `myoElbowPoseTaskFixed-v0` 验证算法正确性（2 万步即收敛，见 7.3 节）。
-
-**Q3：回合步数与动作档位为什么是 300 步、5 档？**
-
-环境默认每回合 100 步、随机动作会把姿态距离从初始 1.84 弧度飘远到 4 弧度以上（来源：`diag_out.txt`），100 步内难以拉回；3 档动作（-1/0/1）无法精细逼近连续目标姿态。因此本模块回合设为 300 步、每肌肉 5 档。
 
 
 
