@@ -104,14 +104,14 @@ $Y = r + \gamma\, Q\!\big(s', \arg\max_{a'} Q(s',a';\theta); \theta^-\big)$
 本环境为姿态任务：智能体需把手的关节角度驱动到与目标姿态一致。环境奖励为稠密奖励（MyoSuite `PoseEnvV0`，默认权重 {pose: 1.0, bonus: 4.0, act\_reg: 1.0, penalty: 50}）：
 
 $$\begin{aligned}
-\text{dist} &= \big\|\, \text{target\_jnt\_value} - qpos[:23] \,\big\| \\[2pt]
+\text{dist} &= \big\|\, \text{target\\_jnt\\_value} - qpos[:23] \,\big\| \\[2pt]
 \text{pose} &= -\text{dist} \\
 \text{bonus} &= \mathbb 1[\text{dist}<0.35] + \mathbb 1[\text{dist}<0.525] \\
-\text{act\_reg} &= -\|\text{act}\| / n_{\text{muscle}} \\
+\text{act\\_reg} &= -\|\text{act}\| / n_{\text{muscle}} \\
 \text{penalty} &= -\mathbb 1[\text{dist}>2\pi]
 \end{aligned}$$
 
-$$\text{dense} = 1.0\cdot\text{pose} + 4.0\cdot\text{bonus} + 1.0\cdot\text{act\_reg} + 50.0\cdot\text{penalty}$$
+$$\text{dense} = 1.0\cdot\text{pose} + 4.0\cdot\text{bonus} + 1.0\cdot\text{act\\_reg} + 50.0\cdot\text{penalty}$$
 
 **奖励判读**：该任务以负距离奖励为主导，只有把关节距离压到 0.35 弧度以内才获得正奖励；在此之前每步奖励约为 −3.8，一回合合计约为 −380 量级。本机实测初始姿态离目标约 1.84 弧度（来源：运行日志 `diag_out.txt`），随机动作可能使姿态距离进一步增大（可到 4 弧度以上），因此训练早期回合奖励为较大的负值属正常现象；收敛的标志是回合奖励持续升高并稳定在明显高于随机基线的水平。
 
